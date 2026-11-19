@@ -45,6 +45,17 @@ class AuthService {
     return userCredential;
   }
 
+    // Iniciar sesión con GitHub.
+  Future<UserCredential> signInWithGitHub() async {
+    final githubProvider = GithubAuthProvider();
+
+    final userCredential = await _auth.signInWithProvider(
+      githubProvider,
+    );
+
+    return userCredential;
+  }
+
 
   // Registrar usuario con correo y contraseña.
   Future<UserCredential> register({

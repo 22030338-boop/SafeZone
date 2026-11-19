@@ -11,6 +11,7 @@ import '../../incidents/screens/incidents_screen.dart';
 import '../providers/emergency_provider.dart';
 import '../providers/motion_provider.dart';
 import '../../map/screens/map_screen.dart';
+import '../../store/screens/store_screen.dart';
 
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
@@ -425,6 +426,21 @@ class DashboardScreen extends ConsumerWidget {
                       );
                     },
                     comingSoon: false,
+                  ),
+
+                  _DashboardActionCard(
+                    icon: Icons.workspace_premium_outlined,
+                    title: 'Planes de protección',
+                    description: 'Conoce nuestros planes y beneficios.',
+                    color: Colors.amber,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const StoreScreen(),
+                        ),
+                      );
+                    },
                   ),
 
                 ],

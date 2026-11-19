@@ -77,6 +77,57 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
   }
 
+  Future<void> _loginWithGitHub() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final credential =
+          await ref.read(authServiceProvider).signInWithGitHub();
+
+      final user = credential.user;
+
+      if (user != null) {
+        await ref
+            .read(profileServiceProvider)
+            .createOrUpdateProfile(user);
+      }
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Inicio de sesión con GitHub exitoso.'),
+        ),
+      );
+    } on FirebaseAuthException catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            e.message ?? 'Error al iniciar sesión con GitHub.',
+          ),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('No se pudo iniciar sesión con GitHub: $e'),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
 
   Future<void> _login() async {
     if (_emailController.text.trim().isEmpty ||
@@ -227,6 +278,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     onPressed: _isLoading ? null : _loginWithGoogle,
                     icon: const Icon(Icons.g_mobiledata, size: 30),
                     label: const Text('Continuar con Google'),
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: const Size(double.infinity, 50),
+                    ),
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  OutlinedButton.icon(
+                    onPressed: _isLoading ? null : _loginWithGitHub,
+                    icon: const Icon(Icons.code, size: 24),
+                    label: const Text('Continuar con GitHub'),
                     style: OutlinedButton.styleFrom(
                       minimumSize: const Size(double.infinity, 50),
                     ),
